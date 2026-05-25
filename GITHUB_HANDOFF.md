@@ -46,6 +46,12 @@ If npm publishing is not ready yet, agents can still install from GitHub:
 npm install -g github:a1baseai/a1zap-bots-cli
 ```
 
+For a pinned reproducible install:
+
+```bash
+npm install -g github:a1baseai/a1zap-bots-cli#v0.1.1
+```
+
 Or from source:
 
 ```bash

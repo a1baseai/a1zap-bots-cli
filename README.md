@@ -12,6 +12,12 @@ From GitHub, available today:
 npm install -g github:a1baseai/a1zap-bots-cli
 ```
 
+For reproducible agent installs, pin the release tag:
+
+```bash
+npm install -g github:a1baseai/a1zap-bots-cli#v0.1.1
+```
+
 From npm after the package is released:
 
 ```bash
@@ -29,7 +35,7 @@ npm run install-local
 From an existing local checkout while iterating:
 
 ```bash
-cd /Users/pasha/a1base/a1zap-maker/packages/a1zap-bots-cli
+cd ./packages/a1zap-bots-cli
 npm run install-local
 ```
 

@@ -67,7 +67,7 @@ if (!status) {
   const message = hasCommit ? "Update A1Zap bots CLI" : "Initial A1Zap bots CLI";
   try {
     run("git", ["commit", "-m", message]);
-  } catch (error) {
+  } catch {
     console.log("");
     console.log("Git commit did not complete, likely because git user.name/user.email is not configured.");
     console.log("Files are staged. Configure git identity, then run:");

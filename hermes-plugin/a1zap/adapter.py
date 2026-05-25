@@ -26,6 +26,13 @@ def _normalize_base_url(value):
     return value
 
 
+def _safe_int(value, default):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
 def check_requirements():
     return bool(_env("A1ZAP_BASE_URL") and _env("A1ZAP_AGENT_ID") and _env("A1ZAP_API_KEY"))
 
@@ -203,9 +210,9 @@ class A1ZapPlatformAdapter(BasePlatformAdapter):
         self.agent_id = extra.get("agent_id") or _env("A1ZAP_AGENT_ID")
         self.api_key = extra.get("api_key") or _env("A1ZAP_API_KEY")
         self.home_channel = extra.get("home_channel") or _env("A1ZAP_HOME_CHANNEL")
-        self.poll_interval_ms = int(extra.get("poll_interval_ms") or _env("A1ZAP_POLL_INTERVAL_MS", "2000"))
-        self.update_limit = int(extra.get("update_limit") or _env("A1ZAP_UPDATE_LIMIT", "25"))
-        self.long_poll_seconds = int(extra.get("long_poll_seconds") or _env("A1ZAP_LONG_POLL_SECONDS", "25"))
+        self.poll_interval_ms = _safe_int(extra.get("poll_interval_ms") or _env("A1ZAP_POLL_INTERVAL_MS", "2000"), 2000)
+        self.update_limit = _safe_int(extra.get("update_limit") or _env("A1ZAP_UPDATE_LIMIT", "25"), 25)
+        self.long_poll_seconds = _safe_int(extra.get("long_poll_seconds") or _env("A1ZAP_LONG_POLL_SECONDS", "25"), 25)
         self._cursor = None
         self._running = False
         self._poll_task = None

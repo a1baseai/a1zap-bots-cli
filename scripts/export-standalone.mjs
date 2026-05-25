@@ -6,8 +6,14 @@ import { fileURLToPath } from "node:url";
 
 const scriptPath = fileURLToPath(import.meta.url);
 const packageRoot = path.resolve(path.dirname(scriptPath), "..");
-const defaultOutput = path.resolve(packageRoot, "..", "..", "..", "dist", "a1zap-bots-cli-standalone");
+const repoRoot = path.resolve(packageRoot, "..", "..");
+const workspaceRoot = path.resolve(repoRoot, "..");
+const defaultOutput = path.resolve(workspaceRoot, "dist", "a1zap-bots-cli-standalone");
 const outputRoot = path.resolve(process.argv[2] || process.env.OUT_DIR || defaultOutput);
+const relativeOutput = path.relative(workspaceRoot, outputRoot);
+if (relativeOutput === "" || relativeOutput.startsWith("..") || path.isAbsolute(relativeOutput)) {
+  throw new Error(`Refusing to export outside workspace root: ${outputRoot}`);
+}
 
 const includePaths = [
   "README.md",
@@ -39,8 +45,20 @@ function writeText(filePath, value) {
   fs.writeFileSync(filePath, value);
 }
 
+const existingGitDir = path.join(outputRoot, ".git");
+const preservedGitDir = fs.existsSync(existingGitDir)
+  ? fs.mkdtempSync(path.join(os.tmpdir(), "a1zap-bots-cli-git-"))
+  : null;
+if (preservedGitDir) {
+  fs.renameSync(existingGitDir, path.join(preservedGitDir, ".git"));
+}
+
 fs.rmSync(outputRoot, { recursive: true, force: true });
 fs.mkdirSync(outputRoot, { recursive: true });
+if (preservedGitDir) {
+  fs.renameSync(path.join(preservedGitDir, ".git"), existingGitDir);
+  fs.rmSync(preservedGitDir, { recursive: true, force: true });
+}
 
 for (const relativePath of includePaths) {
   const source = path.join(packageRoot, relativePath);

@@ -17,6 +17,7 @@ const DEFAULT_HERMES_PLUGIN_DIR = path.join(os.homedir(), ".hermes", "plugins", 
 const HERMES_PLUGIN_ENABLE_KEY = "a1zap";
 const DEFAULT_HERMES_ENV_PATH = path.join(os.homedir(), ".hermes", ".env");
 const GITHUB_INSTALL_COMMAND = "npm install -g github:a1baseai/a1zap-bots-cli";
+const PINNED_GITHUB_INSTALL_COMMAND = `npm install -g github:a1baseai/a1zap-bots-cli#v${VERSION}`;
 const SOURCE_INSTALL_COMMANDS = [
   "git clone https://github.com/a1baseai/a1zap-bots-cli.git",
   "cd a1zap-bots-cli",
@@ -162,6 +163,7 @@ function loadConfig() {
 function saveConfig(config) {
   fs.mkdirSync(CONFIG_DIR, { recursive: true, mode: 0o700 });
   fs.writeFileSync(CONFIG_PATH, `${JSON.stringify(config, null, 2)}\n`, { mode: 0o600 });
+  fs.chmodSync(CONFIG_PATH, 0o600);
 }
 
 function parseEnvBlock(block) {
@@ -594,6 +596,7 @@ async function commandDoctor(globals, rest) {
     },
     install: {
       githubInstallCommand: GITHUB_INSTALL_COMMAND,
+      pinnedGithubInstallCommand: PINNED_GITHUB_INSTALL_COMMAND,
       publishedPackage: PUBLISHED_INSTALL_COMMAND,
       publishedPackageAvailable: false,
       localInstallCommand: "npm run install-local",
@@ -1337,6 +1340,8 @@ async function commandHermes(globals, rest) {
       },
       commands: {
         installCliFromSource: SOURCE_INSTALL_COMMANDS,
+        githubInstallCommand: GITHUB_INSTALL_COMMAND,
+        pinnedGithubInstallCommand: PINNED_GITHUB_INSTALL_COMMAND,
         publishedInstallCommand: PUBLISHED_INSTALL_COMMAND,
         publishedPackageAvailable: false,
         bootstrapNewAgent: "a1zap-bots hermes bootstrap --name \"Campus Planner\" --write-env",
