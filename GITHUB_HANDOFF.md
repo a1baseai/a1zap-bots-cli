@@ -49,7 +49,7 @@ npm install -g github:a1baseai/a1zap-bots-cli
 For a pinned reproducible install:
 
 ```bash
-npm install -g github:a1baseai/a1zap-bots-cli#v0.1.3
+npm install -g github:a1baseai/a1zap-bots-cli#v0.1.4
 ```
 
 Or from source:

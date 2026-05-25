@@ -15,7 +15,7 @@ npm install -g github:a1baseai/a1zap-bots-cli
 For reproducible agent installs, pin the release tag:
 
 ```bash
-npm install -g github:a1baseai/a1zap-bots-cli#v0.1.3
+npm install -g github:a1baseai/a1zap-bots-cli#v0.1.4
 ```
 
 From npm after the package is released:
@@ -90,7 +90,7 @@ Browser/device login:
 a1zap-bots login
 ```
 
-The normal interactive command prints an approval URL, waits, then stores the CLI token after you approve it. The approval page is:
+The normal interactive command opens the approval page when possible, prints the URL/code, waits, then stores the CLI token after you approve it. Use `--no-open` for a pure terminal flow, or `--once --open` to open the browser and exit.
 
 ```text
 https://www.a1zap.com/cli/device

@@ -6,7 +6,7 @@ import path from "node:path";
 import readline from "node:readline/promises";
 import { fileURLToPath } from "node:url";
 
-const VERSION = "0.1.3";
+const VERSION = "0.1.4";
 const DEFAULT_API_BASE_URL = "https://api.a1zap.com";
 const DIRECT_CONVEX_FALLBACK_URL = "https://dusty-sandpiper-500.convex.site";
 const CONFIG_DIR = path.join(os.homedir(), ".a1zap-bots");
@@ -83,6 +83,8 @@ Doctor options:
 
 Login options:
   --once                         Print approval URL and exit
+  --open                         Open approval URL in the default browser
+  --no-open                      Do not open approval URL automatically
   --device-code CODE             Poll an existing device code from JSON/once output
   --timeout SECONDS              Login polling timeout, default 600
 
@@ -228,6 +230,25 @@ function listEnv(value) {
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function openUrlInBrowser(url) {
+  if (!url) return false;
+  const commands =
+    process.platform === "darwin"
+      ? [["open", [url]]]
+      : process.platform === "win32"
+        ? [["cmd", ["/c", "start", "", url]]]
+        : [["xdg-open", [url]]];
+  for (const [command, args] of commands) {
+    try {
+      execFileSync(command, args, { stdio: "ignore" });
+      return true;
+    } catch {
+      // Keep login usable in headless shells.
+    }
+  }
+  return false;
 }
 
 function normalizeBaseUrl(value) {
@@ -760,6 +781,13 @@ async function commandLogin(globals, rest) {
   console.log(`2. Confirm code: ${loginInfo.userCode}`);
   console.log("3. Come back here; I will finish the setup automatically.");
   console.log("");
+
+  const shouldOpenBrowser = options.open || (!options.once && !options.noOpen);
+  if (shouldOpenBrowser) {
+    const opened = openUrlInBrowser(loginInfo.verificationUriComplete);
+    console.log(opened ? "Opened approval page in your browser." : "Could not open a browser automatically; use the link above.");
+    console.log("");
+  }
 
   if (options.once) {
     return;
