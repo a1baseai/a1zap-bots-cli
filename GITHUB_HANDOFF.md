@@ -49,7 +49,7 @@ npm install -g github:a1baseai/a1zap-bots-cli
 For a pinned reproducible install:
 
 ```bash
-npm install -g github:a1baseai/a1zap-bots-cli#v0.1.4
+npm install -g github:a1baseai/a1zap-bots-cli#v0.1.5
 ```
 
 Or from source:
@@ -75,7 +75,7 @@ After install:
 
 ```bash
 a1zap-bots login
-a1zap-bots hermes bootstrap --name "Campus Planner" --write-env
+a1zap-bots hermes bootstrap --name "Campus Planner" --write-env --attach-owner
 a1zap-bots hermes doctor --live
 hermes gateway setup
 hermes gateway run
@@ -84,6 +84,7 @@ hermes gateway run
 After the bot is in an A1Zap/A1 Cohort chat:
 
 ```bash
+a1zap-bots bots attach-owner
 a1zap-bots bots smoke --chat CHAT_ID_FROM_A1ZAP
 ```
 

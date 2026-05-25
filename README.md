@@ -15,7 +15,7 @@ npm install -g github:a1baseai/a1zap-bots-cli
 For reproducible agent installs, pin the release tag:
 
 ```bash
-npm install -g github:a1baseai/a1zap-bots-cli#v0.1.4
+npm install -g github:a1baseai/a1zap-bots-cli#v0.1.5
 ```
 
 From npm after the package is released:
@@ -204,7 +204,7 @@ Fast setup path for a new Hermes gateway agent:
 
 ```bash
 a1zap-bots login
-a1zap-bots hermes bootstrap --name "Campus Planner" --write-env
+a1zap-bots hermes bootstrap --name "Campus Planner" --write-env --attach-owner
 hermes gateway setup
 hermes gateway run
 ```
@@ -299,6 +299,7 @@ a1zap-bots hermes setup --agent-id AGENT_ID --api-key KEY_SHOWN_ONCE --write-env
 Once you have a real A1Zap chat ID, run one end-to-end smoke test before handing the agent to users:
 
 ```bash
+a1zap-bots bots attach-owner
 a1zap-bots bots smoke --chat CHAT_ID_FROM_A1ZAP
 ```
 

@@ -56,7 +56,7 @@ test("doctor emits stable JSON without auth", () => {
   assert.equal(data.apiKey.present, false);
   assert.equal(data.install.publishedPackageAvailable, false);
   assert.equal(data.install.githubInstallCommand, "npm install -g github:a1baseai/a1zap-bots-cli");
-  assert.equal(data.install.pinnedGithubInstallCommand, "npm install -g github:a1baseai/a1zap-bots-cli#v0.1.4");
+  assert.equal(data.install.pinnedGithubInstallCommand, "npm install -g github:a1baseai/a1zap-bots-cli#v0.1.5");
   assert.deepEqual(data.install.sourceCommands, [
     "git clone https://github.com/a1baseai/a1zap-bots-cli.git",
     "cd a1zap-bots-cli",
@@ -318,6 +318,25 @@ test("bots keys dry-run uses saved agent id and owner CLI endpoint", () => {
   const data = JSON.parse(output);
   assert.equal(data.success, true);
   assert.equal(data.path, "/v1/cli/agents/agent_123/keys");
+});
+
+test("bots attach-owner dry-run uses owner chat endpoint", () => {
+  const output = run([
+    "--json",
+    "--base-url",
+    "https://api.example.com",
+    "--agent-id",
+    "agent_123",
+    "--cli-token",
+    "a1cli_test_secret",
+    "bots",
+    "attach-owner",
+    "--dry-run",
+  ]);
+  const data = JSON.parse(output);
+  assert.equal(data.success, true);
+  assert.equal(data.method, "POST");
+  assert.equal(data.path, "/v1/cli/agents/agent_123/owner-chat");
 });
 
 test("bots webhook dry-run can enable Hermes response forwarding", () => {

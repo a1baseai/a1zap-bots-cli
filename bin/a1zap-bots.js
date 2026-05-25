@@ -6,7 +6,7 @@ import path from "node:path";
 import readline from "node:readline/promises";
 import { fileURLToPath } from "node:url";
 
-const VERSION = "0.1.4";
+const VERSION = "0.1.5";
 const DEFAULT_API_BASE_URL = "https://api.a1zap.com";
 const DIRECT_CONVEX_FALLBACK_URL = "https://dusty-sandpiper-500.convex.site";
 const CONFIG_DIR = path.join(os.homedir(), ".a1zap-bots");
@@ -52,6 +52,7 @@ Commands:
   bots list                      List your A1Zap gateway agents
   bots create --name NAME        Create a private API-enabled gateway agent
   bots keys create               Issue a one-time key for a gateway agent
+  bots attach-owner              Create/reuse your own chat with the gateway agent
   bots webhook set --url URL     Set an HTTPS webhook for a gateway agent
   bots smoke --chat ID           Verify auth, chat access, send, and read-back
   bots send --chat ID --text T   Send a bot message
@@ -94,6 +95,7 @@ Hermes bootstrap options:
   --write-env                    Upsert A1ZAP_* values into ~/.hermes/.env
   --save-secret                  Also save the one-time API key in ~/.a1zap-bots/config.json
   --allow-proactive              Include chats:start scope
+  --attach-owner                 Also create/reuse your own A1Zap chat for smoke tests
 
 Hermes setup options:
   --agent-id ID                  Existing A1Zap agent ID
@@ -909,6 +911,24 @@ async function commandBots(globals, rest) {
     return;
   }
 
+  if (sub === "attach-owner") {
+    requireCliRuntime(globals, runtime);
+    const agentId = options.agentId || runtime.agentId;
+    if (!agentId) fail(globals, "bots attach-owner requires --agent-id ID or saved agent ID");
+    const apiPath = `/v1/cli/agents/${encodeURIComponent(agentId)}/owner-chat`;
+    if (options.dryRun) {
+      output(globals, { success: true, dryRun: true, method: "POST", path: apiPath, body: {} });
+      return;
+    }
+    const result = await requestCliJson(runtime, "POST", apiPath, {});
+    output(globals, result, [
+      result.isNewChat ? "Created your owner test chat." : "Reused your owner test chat.",
+      result.chat?.chatId ? `Chat ID: ${result.chat.chatId}` : "",
+      result.chat?.chatId ? `Run: a1zap-bots bots smoke --chat ${result.chat.chatId}` : "",
+    ].filter(Boolean).join("\n"));
+    return;
+  }
+
   if (sub === "webhook") {
     const [webhookAction] = optionRest;
     if (webhookAction !== "set") fail(globals, "bots webhook supports: set");
@@ -1505,6 +1525,16 @@ async function commandHermes(globals, rest) {
       envFile = upsertEnvFile(path.resolve(options.envPath || DEFAULT_HERMES_ENV_PATH), parseEnvBlock(envBlock));
     }
 
+    let ownerChat = null;
+    if (options.attachOwner || options.ownerChat) {
+      ownerChat = await requestCliJson(
+        runtime,
+        "POST",
+        `/v1/cli/agents/${encodeURIComponent(createResult.agent?.id)}/owner-chat`,
+        {},
+      );
+    }
+
     output(globals, {
       success: true,
       agent: createResult.agent,
@@ -1514,13 +1544,16 @@ async function commandHermes(globals, rest) {
       pluginDestination: options.skipInstall ? null : destination,
       enable: enableResult,
       envFile,
+      ownerChat,
       savedSecret: Boolean(options.saveSecret && createResult.key?.apiKey),
       hermesEnv: envBlock,
       nextCommands: [
         "a1zap-bots hermes doctor",
         "hermes gateway setup",
         "hermes gateway run",
-        "a1zap-bots bots smoke --chat CHAT_ID_FROM_A1ZAP --dry-run",
+        ownerChat?.chat?.chatId
+          ? `a1zap-bots bots smoke --chat ${ownerChat.chat.chatId}`
+          : "a1zap-bots bots attach-owner && a1zap-bots bots smoke --chat CHAT_ID_FROM_A1ZAP",
       ],
     }, [
       `Created Hermes gateway agent ${createResult.agent?.name || name} (${createResult.agent?.id || "unknown id"}).`,
@@ -1529,6 +1562,9 @@ async function commandHermes(globals, rest) {
       enableResult.enabled
         ? "Hermes plugin a1zap is enabled."
         : `Enable it with: ${enableResult.command}`,
+      ownerChat?.chat?.chatId
+        ? `${ownerChat.isNewChat ? "Created" : "Reused"} your A1Zap owner test chat: ${ownerChat.chat.chatId}.`
+        : "",
       envFile
         ? `Wrote A1Zap values to ${displayPath(envFile.path)}.`
         : "Paste this into ~/.hermes/.env:",

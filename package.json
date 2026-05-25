@@ -1,6 +1,6 @@
 {
   "name": "@a1zap/bots-cli",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "CLI and Hermes/OpenClaw gateway helpers for connecting external agents to A1Zap chats.",
   "private": false,
   "license": "UNLICENSED",
