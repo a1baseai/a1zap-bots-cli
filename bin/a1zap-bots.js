@@ -6,8 +6,9 @@ import path from "node:path";
 import readline from "node:readline/promises";
 import { fileURLToPath } from "node:url";
 
-const VERSION = "0.1.1";
-const DEFAULT_API_BASE_URL = "https://dusty-sandpiper-500.convex.site";
+const VERSION = "0.1.2";
+const DEFAULT_API_BASE_URL = "https://api.a1zap.com";
+const DIRECT_CONVEX_FALLBACK_URL = "https://dusty-sandpiper-500.convex.site";
 const CONFIG_DIR = path.join(os.homedir(), ".a1zap-bots");
 const CONFIG_PATH = path.join(CONFIG_DIR, "config.json");
 const BIN_PATH = fs.realpathSync(fileURLToPath(import.meta.url));
@@ -591,8 +592,8 @@ async function commandDoctor(globals, rest) {
       ok: null,
       error: null,
       verificationUri: null,
-      fallbackBaseUrl: DEFAULT_API_BASE_URL,
-      fallbackCommand: `a1zap-bots config set --base-url ${DEFAULT_API_BASE_URL}`,
+      fallbackBaseUrl: DIRECT_CONVEX_FALLBACK_URL,
+      fallbackCommand: `a1zap-bots config set --base-url ${DIRECT_CONVEX_FALLBACK_URL}`,
     },
     install: {
       githubInstallCommand: GITHUB_INSTALL_COMMAND,

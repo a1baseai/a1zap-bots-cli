@@ -5,9 +5,9 @@ version: 0.2.1
 description: A1Zap messaging gateway adapter for Hermes agents with chat, typing, media metadata, and background delivery
 requires_env:
   - name: A1ZAP_BASE_URL
-    description: "A1Zap bot API base URL. Use https://dusty-sandpiper-500.convex.site until api.a1zap.com has the /v1 gateway proxy deployed."
+    description: "A1Zap bot API base URL. Use the branded gateway unless an A1Zap engineer tells you to use the direct Convex fallback."
     prompt: "A1Zap bot API base URL"
-    url: "https://dusty-sandpiper-500.convex.site"
+    url: "https://api.a1zap.com"
     password: false
   - name: A1ZAP_AGENT_ID
     description: "A1Zap agent ID to connect to Hermes"

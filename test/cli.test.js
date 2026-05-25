@@ -56,7 +56,7 @@ test("doctor emits stable JSON without auth", () => {
   assert.equal(data.apiKey.present, false);
   assert.equal(data.install.publishedPackageAvailable, false);
   assert.equal(data.install.githubInstallCommand, "npm install -g github:a1baseai/a1zap-bots-cli");
-  assert.equal(data.install.pinnedGithubInstallCommand, "npm install -g github:a1baseai/a1zap-bots-cli#v0.1.1");
+  assert.equal(data.install.pinnedGithubInstallCommand, "npm install -g github:a1baseai/a1zap-bots-cli#v0.1.2");
   assert.deepEqual(data.install.sourceCommands, [
     "git clone https://github.com/a1baseai/a1zap-bots-cli.git",
     "cd a1zap-bots-cli",

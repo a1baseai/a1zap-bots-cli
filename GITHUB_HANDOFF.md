@@ -49,7 +49,7 @@ npm install -g github:a1baseai/a1zap-bots-cli
 For a pinned reproducible install:
 
 ```bash
-npm install -g github:a1baseai/a1zap-bots-cli#v0.1.1
+npm install -g github:a1baseai/a1zap-bots-cli#v0.1.2
 ```
 
 Or from source:
@@ -87,23 +87,23 @@ After the bot is in an A1Zap/A1 Cohort chat:
 a1zap-bots bots smoke --chat CHAT_ID_FROM_A1ZAP
 ```
 
-## Current Production Caveat
+## Production Gateway
 
-The direct Convex gateway works:
+The branded gateway is the default:
 
 ```text
-https://dusty-sandpiper-500.convex.site
+https://api.a1zap.com
 ```
 
-The branded proxy `https://api.a1zap.com` should be used only after the `a1zap-api` Cloudflare worker is deployed with `/v1/cli/*` and `/v1/bots/*` proxy routes.
+It proxies `/v1/cli/*` and `/v1/bots/*` to Convex HTTP actions.
 
 Run this to verify:
 
 ```bash
-a1zap-bots --base-url https://api.a1zap.com --json doctor --setup-live
+a1zap-bots --json doctor --setup-live
 ```
 
-If it returns HTML or says the route is not deployed, use the direct Convex base URL for now:
+If it returns HTML or says the route is not deployed, use the direct Convex base URL as a fallback:
 
 ```bash
 a1zap-bots config set --base-url https://dusty-sandpiper-500.convex.site

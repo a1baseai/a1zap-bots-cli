@@ -15,7 +15,7 @@ npm install -g github:a1baseai/a1zap-bots-cli
 For reproducible agent installs, pin the release tag:
 
 ```bash
-npm install -g github:a1baseai/a1zap-bots-cli#v0.1.1
+npm install -g github:a1baseai/a1zap-bots-cli#v0.1.2
 ```
 
 From npm after the package is released:
@@ -57,13 +57,13 @@ npm run pack:check
 commands and today-vs-published install paths, so AgentSpark, Hermes, or another
 setup agent can show the exact next action without parsing prose.
 
-The CLI currently defaults to the production Convex HTTP-actions gateway:
+The CLI defaults to the branded production gateway:
 
 ```bash
-a1zap-bots --base-url https://dusty-sandpiper-500.convex.site --json doctor --setup-live
+a1zap-bots --json doctor --setup-live
 ```
 
-`https://api.a1zap.com` is the branded Cloudflare proxy target. Use it after the `/v1/cli/*` and `/v1/bots/*` worker routes are deployed there.
+That uses `https://api.a1zap.com`, which proxies `/v1/cli/*` and `/v1/bots/*` to Convex HTTP actions. The direct Convex gateway remains a fallback if the branded proxy is temporarily unavailable.
 
 ## Auth And Config
 
@@ -109,7 +109,7 @@ Config:
 
 ```bash
 a1zap-bots config set \
-  --base-url https://dusty-sandpiper-500.convex.site \
+  --base-url https://api.a1zap.com \
   --agent-id AGENT_ID
 ```
 
@@ -158,7 +158,7 @@ Configure once:
 
 ```bash
 a1zap-bots config set \
-  --base-url https://dusty-sandpiper-500.convex.site \
+  --base-url https://api.a1zap.com \
   --agent-id AGENT_ID
 export A1ZAP_API_KEY=KEY_SHOWN_ONCE
 ```
@@ -224,7 +224,7 @@ Hermes side:
 
 ```bash
 a1zap-bots hermes install-plugin
-a1zap-bots --base-url https://dusty-sandpiper-500.convex.site hermes setup \
+a1zap-bots --base-url https://api.a1zap.com hermes setup \
   --agent-id AGENT_ID \
   --api-key KEY_SHOWN_ONCE \
   --write-env
