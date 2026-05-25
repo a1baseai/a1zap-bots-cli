@@ -6,7 +6,7 @@ import path from "node:path";
 import readline from "node:readline/promises";
 import { fileURLToPath } from "node:url";
 
-const VERSION = "0.1.2";
+const VERSION = "0.1.3";
 const DEFAULT_API_BASE_URL = "https://api.a1zap.com";
 const DIRECT_CONVEX_FALLBACK_URL = "https://dusty-sandpiper-500.convex.site";
 const CONFIG_DIR = path.join(os.homedir(), ".a1zap-bots");
@@ -1285,6 +1285,7 @@ async function commandHermes(globals, rest) {
     const hasApiKey = Boolean(hermesRuntime.apiKey);
     const allowAllUsers = truthyEnv(envFile.values.A1ZAP_ALLOW_ALL_USERS || process.env.A1ZAP_ALLOW_ALL_USERS);
     const allowedUsers = listEnv(envFile.values.A1ZAP_ALLOWED_USERS || process.env.A1ZAP_ALLOWED_USERS);
+    const readyForInboundMessages = allowAllUsers || allowedUsers.length > 0;
     const sourceManifest = readHermesPluginManifest(HERMES_PLUGIN_SOURCE);
     const installedManifest = readHermesPluginManifest(pluginDestination);
     const pluginInstalled = installedManifest.exists;
@@ -1327,13 +1328,21 @@ async function commandHermes(globals, rest) {
       access: {
         allowAllA1ZapChatMembers: allowAllUsers,
         allowedUsersCount: allowedUsers.length,
-        readyForInboundMessages: allowAllUsers || allowedUsers.length > 0,
+        readyForInboundMessages,
         recommendation:
-          allowAllUsers || allowedUsers.length > 0
+          readyForInboundMessages
             ? "A1Zap inbound access is configured for Hermes."
             : "Set A1ZAP_ALLOW_ALL_USERS=true to trust A1Zap chat membership, or fill A1ZAP_ALLOWED_USERS with sender IDs/handles.",
       },
-      readyForHermesGateway: Boolean(hermes.ok && pluginInstalled && !pluginNeedsUpdate && hasBaseUrl && hasAgentId && hasApiKey),
+      readyForHermesGateway: Boolean(
+        hermes.ok
+          && pluginInstalled
+          && !pluginNeedsUpdate
+          && hasBaseUrl
+          && hasAgentId
+          && hasApiKey
+          && readyForInboundMessages,
+      ),
       network: {
         checked: false,
         ok: null,

@@ -15,7 +15,7 @@ npm install -g github:a1baseai/a1zap-bots-cli
 For reproducible agent installs, pin the release tag:
 
 ```bash
-npm install -g github:a1baseai/a1zap-bots-cli#v0.1.2
+npm install -g github:a1baseai/a1zap-bots-cli#v0.1.3
 ```
 
 From npm after the package is released:

@@ -56,7 +56,7 @@ test("doctor emits stable JSON without auth", () => {
   assert.equal(data.apiKey.present, false);
   assert.equal(data.install.publishedPackageAvailable, false);
   assert.equal(data.install.githubInstallCommand, "npm install -g github:a1baseai/a1zap-bots-cli");
-  assert.equal(data.install.pinnedGithubInstallCommand, "npm install -g github:a1baseai/a1zap-bots-cli#v0.1.2");
+  assert.equal(data.install.pinnedGithubInstallCommand, "npm install -g github:a1baseai/a1zap-bots-cli#v0.1.3");
   assert.deepEqual(data.install.sourceCommands, [
     "git clone https://github.com/a1baseai/a1zap-bots-cli.git",
     "cd a1zap-bots-cli",
@@ -548,6 +548,47 @@ test("hermes bootstrap creates a gateway agent and can write Hermes env", async 
     assert.match(envText, /A1ZAP_AGENT_ID=agent_123/);
     assert.match(envText, /A1ZAP_API_KEY=a1bot_test_secret/);
   });
+});
+
+test("hermes doctor requires an inbound access policy", () => {
+  const home = fs.mkdtempSync(path.join(os.tmpdir(), "a1zap-bots-test-"));
+  const fakeBin = path.join(home, "bin");
+  fs.mkdirSync(fakeBin, { recursive: true });
+  const fakeHermes = path.join(fakeBin, "hermes");
+  fs.writeFileSync(
+    fakeHermes,
+    [
+      "#!/bin/sh",
+      "if [ \"$1\" = \"plugins\" ]; then",
+      "  echo 'a1zap enabled'",
+      "  exit 0",
+      "fi",
+      "echo 'Hermes fake'",
+    ].join("\n"),
+  );
+  fs.chmodSync(fakeHermes, 0o755);
+
+  const pluginDir = path.join(home, ".hermes", "plugins", "a1zap");
+  fs.mkdirSync(pluginDir, { recursive: true });
+  fs.writeFileSync(path.join(pluginDir, "plugin.yaml"), "name: a1zap\nversion: 0.2.1\n");
+  const envDir = path.join(home, ".hermes");
+  fs.mkdirSync(envDir, { recursive: true });
+  fs.writeFileSync(path.join(envDir, ".env"), [
+    "A1ZAP_BASE_URL=https://api.a1zap.com",
+    "A1ZAP_AGENT_ID=agent_123",
+    "A1ZAP_API_KEY=secret_key_123",
+  ].join("\n"));
+
+  const output = run(["--json", "hermes", "doctor"], {
+    HOME: home,
+    PATH: `${fakeBin}:${process.env.PATH}`,
+  });
+
+  const data = JSON.parse(output);
+  assert.equal(data.success, false);
+  assert.equal(data.readyForHermesGateway, false);
+  assert.equal(data.access.readyForInboundMessages, false);
+  assert.match(data.next.join("\n"), /A1ZAP_ALLOW_ALL_USERS=true/);
 });
 
 test("hermes setup can write an existing gateway agent into Hermes env", () => {
