@@ -1,0 +1,52 @@
+{
+  "name": "@a1zap/bots-cli",
+  "version": "0.1.1",
+  "description": "CLI and Hermes/OpenClaw gateway helpers for connecting external agents to A1Zap chats.",
+  "private": false,
+  "license": "UNLICENSED",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/a1baseai/a1zap-bots-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/a1baseai/a1zap-bots-cli/issues"
+  },
+  "homepage": "https://github.com/a1baseai/a1zap-bots-cli#readme",
+  "keywords": [
+    "a1zap",
+    "bots",
+    "agents",
+    "hermes",
+    "openclaw",
+    "chatbot",
+    "messaging-gateway"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "a1zap-bots": "./bin/a1zap-bots.js"
+  },
+  "files": [
+    "README.md",
+    "GITHUB_HANDOFF.md",
+    "Makefile",
+    "bin/",
+    "examples/",
+    "scripts/",
+    "hermes-plugin/a1zap/__init__.py",
+    "hermes-plugin/a1zap/adapter.py",
+    "hermes-plugin/a1zap/plugin.yaml"
+  ],
+  "scripts": {
+    "export:standalone": "node scripts/export-standalone.mjs",
+    "install-local": "node scripts/install-local.mjs",
+    "repo:init": "node scripts/prepare-github-repo.mjs",
+    "test": "node --test test/*.test.js",
+    "pack:check": "npm test && npm pack --dry-run"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

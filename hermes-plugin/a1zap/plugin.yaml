@@ -1,0 +1,39 @@
+name: a1zap
+label: A1Zap
+kind: platform
+version: 0.2.1
+description: A1Zap messaging gateway adapter for Hermes agents with chat, typing, media metadata, and background delivery
+requires_env:
+  - name: A1ZAP_BASE_URL
+    description: "A1Zap bot API base URL. Use https://dusty-sandpiper-500.convex.site until api.a1zap.com has the /v1 gateway proxy deployed."
+    prompt: "A1Zap bot API base URL"
+    url: "https://dusty-sandpiper-500.convex.site"
+    password: false
+  - name: A1ZAP_AGENT_ID
+    description: "A1Zap agent ID to connect to Hermes"
+    prompt: "A1Zap agent ID"
+    password: false
+  - name: A1ZAP_API_KEY
+    description: "One-time bot API key issued by a1zap-bots, AgentSpark, or the A1Zap agent settings UI"
+    prompt: "A1Zap bot API key"
+    password: true
+optional_env:
+  - name: A1ZAP_HOME_CHANNEL
+    description: "Optional A1Zap chat ID for Hermes background deliveries"
+    prompt: "A1Zap home chat ID"
+    password: false
+  - name: A1ZAP_POLL_INTERVAL_MS
+    description: "Polling interval for bot updates, default 2000"
+    password: false
+  - name: A1ZAP_UPDATE_LIMIT
+    description: "Maximum updates per poll, default 25"
+    password: false
+  - name: A1ZAP_LONG_POLL_SECONDS
+    description: "Long-poll timeout for update requests, default 25"
+    password: false
+  - name: A1ZAP_ALLOWED_USERS
+    description: "Optional extra Hermes-level allowlist for A1Zap sender IDs or handles. Usually leave empty and use A1ZAP_ALLOW_ALL_USERS=true because A1Zap already gates by chat membership."
+    password: false
+  - name: A1ZAP_ALLOW_ALL_USERS
+    description: "Set true for normal A1Zap chat-member access. A1Zap only delivers chats this bot can access; use A1ZAP_ALLOWED_USERS for an extra Hermes-only gate."
+    password: false
