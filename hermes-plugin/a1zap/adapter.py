@@ -327,7 +327,7 @@ class A1ZapPlatformAdapter(BasePlatformAdapter):
             chat_id=str(chat_id),
             chat_name=chat.get("name") or str(chat_id),
             chat_type=_normalize_chat_type(chat.get("type") or chat.get("category")),
-            user_id=str(sender.get("conversationUserId") or sender.get("userId") or sender.get("id") or "unknown"),
+            user_id=str(sender.get("userId") or sender.get("id") or sender.get("conversationUserId") or "unknown"),
             user_name=sender.get("name") or sender.get("handle") or "A1Zap user",
             message_id=message.get("id"),
         )
@@ -337,6 +337,8 @@ class A1ZapPlatformAdapter(BasePlatformAdapter):
         primary_kind = media_types[0] if media_types else "text"
         metadata = {
             "a1zap_event": event,
+            "a1zap_user_id": sender.get("userId"),
+            "a1zap_conversation_user_id": sender.get("conversationUserId"),
             "attachments": attachments,
             "richContentBlocks": message.get("richContentBlocks"),
             "replyToMessageId": message.get("replyToMessageId"),

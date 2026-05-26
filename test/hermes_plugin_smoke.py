@@ -193,7 +193,11 @@ def test_send_and_event_conversion():
             "id": "msg_in",
             "chatId": "chat_123",
             "text": "hey look",
-            "sender": {"conversationUserId": "user_123", "name": "Pasha"},
+            "sender": {
+                "conversationUserId": "conversation_user_123",
+                "userId": "app_user_123",
+                "name": "Pasha",
+            },
             "attachments": [
                 {
                     "id": "media_1",
@@ -210,12 +214,14 @@ def test_send_and_event_conversion():
     assert message_event.message_id == "msg_in"
     assert message_event.source["chat_id"] == "chat_123"
     assert message_event.source["chat_type"] == "group"
-    assert message_event.source["user_id"] == "user_123"
+    assert message_event.source["user_id"] == "app_user_123"
     assert message_event.raw_message == event
     assert message_event.media_urls == ["https://cdn.example.com/photo.jpg"]
     assert message_event.media_types == ["image"]
     assert message_event.reply_to_message_id == "msg_parent"
     assert message_event.metadata["a1zap_event"] == event
+    assert message_event.metadata["a1zap_user_id"] == "app_user_123"
+    assert message_event.metadata["a1zap_conversation_user_id"] == "conversation_user_123"
 
 
 def test_standalone_send_uses_home_channel_fallback():
